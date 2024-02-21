@@ -5,6 +5,7 @@ then
     utilities = {}
     texio = {}
 end
+-- for debugging
 -- tex.print = texio.write_nl
 Lang = os.getenv("CV_LANG") or "en"
 texio.write_nl("Lang is: " .. Lang)
@@ -193,8 +194,12 @@ local function print_head()
         tex.print(i.bio[Lang])
         tex.print("\\end{center}")
     else
-        tex.print(
-            "\\begin{figure}[H]\\centering\\tikz  \\draw [path picture={ \\node at (path picture bounding box.center){\\includegraphics[height=4cm]{photo.png}} ;}] (0,1) circle (1.8) ;\\end{figure}")
+        if i.picture ~= nil
+        then
+            tex.print(
+                "\\begin{figure}[H]\\centering\\tikz  \\draw [path picture={ \\node at (path picture bounding box.center){\\includegraphics[height=4cm]{" ..
+                i.picture .. "}} ;}] (0,1) circle (1.8) ;\\end{figure}")
+        end
     end
     tex.print("\\fontfamily{\\sfdefault}\\selectfont \\color{black!70}")
 end
