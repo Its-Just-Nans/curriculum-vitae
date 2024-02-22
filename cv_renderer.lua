@@ -22,7 +22,8 @@ local function read_json(file)
     return content
 end
 
-Data = utilities.json.tolua(read_json('cv_data.json'))
+Json_path = os.getenv("CV_JSON") or "cv_data.json"
+Data = utilities.json.tolua(read_json(Json_path))
 
 
 local function g(value)
@@ -138,7 +139,7 @@ local function print_personal()
 end
 
 local function print_project()
-    local data = Data.personal
+    local data = Data.project
     if data == nil
     then
         return
@@ -288,8 +289,8 @@ local function print_languages()
     tex.print("\\begin{center}")
     tex.print("\\begin{tabular}{>{\\ssmall}rp{0.3\\textwidth}}")
     for nameCount = 1, #p.data do
-        tex.print("{\\large " ..
-            g(p.data[nameCount].name) .. "} & {\\large " .. g(p.data[nameCount].level) .. "}\\vspace{0.5em}")
+        tex.print("{\\large \\textbf{" ..
+            g(p.data[nameCount].name) .. "}} & {\\normalsize " .. g(p.data[nameCount].level) .. "}\\vspace{0.5em}")
         tex.print("\\\\")
     end
     tex.print("\\end{tabular}")
