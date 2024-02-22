@@ -96,15 +96,17 @@ local function print_experience()
     tex.print("\\newline")
     tex.print("\\begin{tabular}{r> {}p{1.15\\paracolwidth} }")
     for nameCount = 1, #workData do
-        if workData[nameCount].name[Lang] ~= nil then
-            tex.print(
-                g(workData[nameCount].date) ..
-                ' & ' ..
-                g(workData[nameCount].name) ..
-                ' \\newline ' ..
-                g(workData[nameCount].description)
-            )
-            tex.print(" \\vspace{0.4em} \\\\")
+        if workData[nameCount].optionnal ~= true then
+            if workData[nameCount].name[Lang] ~= nil then
+                tex.print(
+                    g(workData[nameCount].date) ..
+                    ' & ' ..
+                    g(workData[nameCount].name) ..
+                    ' \\newline ' ..
+                    g(workData[nameCount].description)
+                )
+                tex.print(" \\vspace{0.4em} \\\\")
+            end
         end
     end
     tex.print("\\end{tabular}")
