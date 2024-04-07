@@ -1,7 +1,7 @@
 data/
 
 # latex
-main.pdf
+*.pdf
 main.aux
 main.log
 main.out
