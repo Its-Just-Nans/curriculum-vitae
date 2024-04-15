@@ -6,6 +6,6 @@ Generate curriculum vitæ from json using lua and lualatex
 
 ```sh
 # create the cv_data.json
-
-CV_JSON=data/cv/cv_data.json CV_LANG=en lualatex main.tex
+FILENAME=CV
+for onel in "en" "fr";do CV_JSON=data/cv/cv_data.json CV_LANG=$onel lualatex --jobname=${FILENAME}_${onel} main.tex; done
 ```

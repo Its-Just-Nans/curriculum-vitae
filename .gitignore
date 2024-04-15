@@ -2,6 +2,6 @@ data/
 
 # latex
 *.pdf
-main.aux
-main.log
-main.out
+*.aux
+*.log
+*.out
