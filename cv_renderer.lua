@@ -118,7 +118,7 @@ local function print_table(personalData)
         return
     end
     tex.print("\\begin{itemize}")
-    tex.print("\\setlength\\itemsep{0.1em}")
+    tex.print("\\setlength\\itemsep{0.4em}")
     for nameCount = 1, #personalData do
         if personalData[nameCount].description[Lang] then
             tex.print(
