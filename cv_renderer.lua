@@ -47,9 +47,16 @@ function Write_metadata()
     then
         return
     end
-    tex.print("\\title{CV - " .. me.firstname .. me.lastname .. "}")
-    tex.print("\\author{" .. me.firstname .. me.lastname .. "}")
+    tex.print("\\title{CV - " .. me.firstname .. ' ' .. me.lastname .. "}")
+    tex.print("\\author{" .. me.firstname .. ' ' .. me.lastname .. "}")
     tex.print("\\date{" .. os.date("%Y-%m-%d") .. "}")
+    tex.print('\\hypersetup{' ..
+        'pdftitle={CV - ' ..
+        me.firstname .. ' ' .. me.lastname .. ' (created with https://github.com/Its-Just-Nans/curriculum-vitae)},' ..
+        'pdfsubject={curriculum vitae' .. ' of ' .. me.firstname .. ' ' .. me.lastname .. '},' ..
+        'pdfauthor={' .. me.firstname .. ' ' .. me.lastname .. '},' ..
+        -- 'pdfkeywords={PDF keywords}' ..
+        '}')
 end
 
 local function print_title_section(dataText)
