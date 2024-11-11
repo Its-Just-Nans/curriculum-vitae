@@ -228,10 +228,8 @@ local function print_info()
     tex.print("}")
     tex.print(g(i.location) .. "~\\faMapMarker\\\\")
     tex.print("\\href{tel:" .. i.phone:gsub(" ", "") .. "}{" .. i.phone .. "}~\\faPhone\\\\")
-    if i.driving
-    then
-        tex.print("Driving licence~\\faWpforms")
-    end
+
+    tex.print(g(i.driving) .. "~\\faWpforms")
     tex.print("\\\\")
     tex.print("\\href{" .. i.website .. "}{" .. i.website .. "}~\\faHome")
     tex.print("\\\\")
