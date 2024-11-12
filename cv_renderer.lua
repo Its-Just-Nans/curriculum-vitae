@@ -2,7 +2,7 @@ local function read_file(file)
     local handler = io.open(file, "rb")
     if handler == nil
     then
-        texio.write_nl("File not found: " .. file)
+        print("File not found: " .. file)
         return "{}"
     end
     local content = handler:read("*a")
@@ -66,7 +66,7 @@ local function g(value)
             return nil
         end
         local text = "Value not found for '" .. Lang .. "' in " .. utilities.json.tostring(value) .. "\n"
-        texio.write_nl(text)
+        print(text)
         return nil
     end
     return value
@@ -111,7 +111,7 @@ local function Education()
     buf = TableConcat(buf, print_title_section(data.title))
     local educationData = data.data
     table.insert(buf, "\\newline")
-    table.insert(buf, "\\begin{tabular}{r> {}p{1\\paracolwidth}}")
+    table.insert(buf, "\\begin{tabular}{r> {}p{1.1\\paracolwidth}}")
     for nameCount = 1, #educationData do
         table.insert(buf,
             '{' .. g(educationData[nameCount].date) .. '}' ..
@@ -137,7 +137,7 @@ local function Experience()
     buf = TableConcat(buf, print_title_section(data.title))
     local workData = data.data
     table.insert(buf, "\\newline")
-    table.insert(buf, "\\begin{tabular}{r> {}p{1\\paracolwidth}}")
+    table.insert(buf, "\\begin{tabular}{r> {}p{1.1\\paracolwidth}}")
     for nameCount = 1, #workData do
         if workData[nameCount].optionnal ~= true then
             if workData[nameCount].name[Lang] ~= nil then
@@ -455,13 +455,14 @@ local function Headers()
         '\\definecolor{cvgrey}{HTML}{CFCFCF}',
         '\\colorlet{cvcolour}{cvblue}',
         '\\colorlet{cvaltcolour}{cvgrey}',
-        '\\newcommand{\\customHeight}{1.5cm}',
+        '\\newcommand{\\customHeight}{1.7cm}',
         '\\usepackage[right=0.8cm, left=0.8cm, top=\\customHeight, bottom=\\customHeight, a4paper]{geometry}',
         '\\newlength{\\paracolwidth}',
         '\\newlength{\\onefifthwidth}',
         '\\setlength{\\paracolwidth}{0.50\\textwidth}',
         '\\setlength{\\onefifthwidth}{0.23\\textwidth}',
-        '\\pagestyle{fancy}'
+        '\\pagestyle{fancy}',
+        '\\usepackage[none]{hyphenat}',
     }
 end
 
@@ -529,7 +530,7 @@ end
 local function self_invoke()
     local file = io.open("main.tex", "w")
     if file == nil then
-        texio.write_nl("Error: Cannot open file")
+        print("Error: Cannot open file")
         return
     end
     local tex_file = "\\documentclass[10pt]{article}" .. "\n" ..
@@ -555,7 +556,6 @@ end
 
 -- start variables
 Is_lib = pcall(debug.getlocal, 4, 1) or false
-Lang = os.getenv("CV_LANG") or "en"
 Json_path = os.getenv("CV_JSON") or "cv_data.json"
 
 
@@ -565,18 +565,16 @@ if Is_lib then
     if tex == nil
     then
         tex = {}
-        utilities = {}
         texio = {}
+        utilities = {}
     end
-    texio.write_nl("Lang is: " .. Lang)
+    print = texio.write_nl
     -- for debugging
     -- tex.print = texio.write_nl
+    Lang = os.getenv("CV_LANG") or "en"
+    print("Lang is: " .. Lang)
     Data = utilities.json.tolua(read_file(Json_path))
 else
-    tex = {}
-    texio = {
-        write_nl = print
-    }
     local json = require "json"
     Data = json.decode(read_file(Json_path))
     self_invoke()
