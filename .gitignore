@@ -5,3 +5,4 @@ data/
 *.aux
 *.log
 *.out
+.env
