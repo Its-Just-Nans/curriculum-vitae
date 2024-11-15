@@ -528,7 +528,8 @@ function Write_CV()
 end
 
 local function self_invoke()
-    local file = io.open("main.tex", "w")
+    local working_file = "main.tex"
+    local file = io.open(working_file, "w")
     if file == nil then
         print("Error: Cannot open file")
         return
@@ -546,12 +547,12 @@ local function self_invoke()
     local lang = Data.cv_langs
     for i, one_lang in ipairs(lang) do
         local full_filename = FILENAME .. "_" .. one_lang
-        os.execute("CV_LANG=" .. one_lang .. " lualatex --jobname=" .. full_filename .. " main.tex")
+        os.execute("CV_LANG=" .. one_lang .. " lualatex --jobname=" .. full_filename .. " " .. working_file)
         for index, ext in ipairs({ "aux", "log", "out" }) do
             os.remove(full_filename .. "." .. ext)
         end
     end
-    os.remove("main.tex")
+    os.remove(working_file)
 end
 
 -- start variables
@@ -561,6 +562,7 @@ Json_path = os.getenv("CV_JSON") or "cv_data.json"
 
 
 if Is_lib then
+    -- we are in lualatex
     require("lualibs.lua")
     if tex == nil
     then
