@@ -8,7 +8,5 @@ A single lua script which autoload itself into lualatex to generate a cv from a 
 
 ```sh
 # create the cv_data.json
-# load env (and export variables)
-source .env
 lua cv_renderer.lua
 ```

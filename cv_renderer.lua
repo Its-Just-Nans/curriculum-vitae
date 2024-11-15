@@ -72,8 +72,7 @@ local function g(value)
     return value
 end
 
-local function Metadata()
-    local me = Data.me
+local function Metadata(me)
     if me == nil
     then
         return {}
@@ -101,8 +100,7 @@ local function print_title_section(dataText)
     }
 end
 
-local function Education()
-    local data = Data.school
+local function Education(data)
     local buf = {}
     if data == nil
     then
@@ -127,8 +125,7 @@ local function Education()
     return buf
 end
 
-local function Experience()
-    local data = Data.work
+local function Experience(data)
     local buf = {}
     if data == nil
     then
@@ -177,8 +174,7 @@ local function print_table(personalData)
     return buf
 end
 
-local function Personal()
-    local data = Data.personal
+local function Personal(data)
     if data == nil
     then
         return {}
@@ -189,8 +185,7 @@ local function Personal()
     )
 end
 
-local function Project()
-    local data = Data.project
+local function Project(data)
     if data == nil
     then
         return {}
@@ -201,8 +196,7 @@ local function Project()
     )
 end
 
-local function Header()
-    local me = Data.me
+local function Header(me)
     local buf = {}
     if me == nil
     then
@@ -217,19 +211,18 @@ local function Header()
     )
 end
 
-local function Content()
+local function Content(data)
     return TableConcat6(
-        Header(),
+        Header(data.me),
         { "\\fontsize{11.3pt}{11.3pt}\\selectfont" },
-        Education(),
-        Experience(),
-        Project(),
-        Personal()
+        Education(data.school),
+        Experience(data.work),
+        Project(data.project),
+        Personal(data.personal)
     )
 end
 
-local function Head()
-    local i = Data.me
+local function Head(i)
     local buf = {}
     if i == nil
     then
@@ -263,8 +256,7 @@ local function Head()
     return buf
 end
 
-local function Info()
-    local i = Data.me
+local function Info(i)
     local buf = ""
     if i == nil
     then
@@ -293,8 +285,7 @@ local function Info()
     }
 end
 
-local function print_dev_languages()
-    local p = Data.languages
+local function print_dev_languages(p)
     local buf = {}
     if p == nil
     then
@@ -318,8 +309,7 @@ local function print_dev_languages()
     return buf
 end
 
-local function print_tools()
-    local p = Data.tools
+local function print_tools(p)
     local buf = {}
     if p == nil
     then
@@ -341,8 +331,7 @@ local function print_tools()
     )
 end
 
-local function print_languages()
-    local p = Data.langs
+local function print_languages(p)
     local buf = {}
     if p == nil
     then
@@ -361,8 +350,7 @@ local function print_languages()
     )
 end
 
-local function print_hobbies()
-    local p = Data.hobbies
+local function print_hobbies(p)
     local buf = {}
     if p == nil
     then
@@ -466,17 +454,17 @@ local function Headers()
     }
 end
 
-local function Sidebar()
+local function Sidebar(data)
     return TableConcat(
         { "\\fontsize{11.5pt}{11.5pt}\\selectfont", },
         Latex_Block({ "navbar" },
             TableConcat7(
-                Head(),
-                Info(),
-                print_dev_languages(),
-                print_tools(),
-                print_languages(),
-                print_hobbies(),
+                Head(data.me),
+                Info(data.me),
+                print_dev_languages(data.languages),
+                print_tools(data.tools),
+                print_languages(data.langs),
+                print_hobbies(data.hobbies),
                 { "\\vspace*{\\fill}", }
             )
         )
@@ -493,75 +481,29 @@ end
 
 
 
-local function Write_Document()
-    TexLines(
-        Latex_Block({ "document" },
-            TableConcat(
-                {
-                    '\\setlength{\\columnsep}{0.75cm}',
-                    '\\columnratio{0.27}',
-                    '\\setlength{\\columnseprule}{4pt}',
-                    '\\colseprulecolor{lightcol}',
-                    '\\hbadness5000',
-                },
-                Latex_Block({ "paracol", "2" },
-                    TableConcat4(
-                        { '\\switchcolumn*' },
-                        Sidebar(),
-                        { '\\switchcolumn\\color{black!80}' },
-                        Content()
-                    )
+local function Document(data)
+    return Latex_Block({ "document" },
+        TableConcat(
+            {
+                '\\setlength{\\columnsep}{0.75cm}',
+                '\\columnratio{0.27}',
+                '\\setlength{\\columnseprule}{4pt}',
+                '\\colseprulecolor{lightcol}',
+                '\\hbadness5000',
+            },
+            Latex_Block({ "paracol", "2" },
+                TableConcat4(
+                    { '\\switchcolumn*' },
+                    Sidebar(data),
+                    { '\\switchcolumn\\color{black!80}' },
+                    Content(data)
                 )
             )
         )
     )
 end
 
-local function Write_Head()
-    TexLines(Headers())
-    TexLines(Metadata())
-end
-
 function Write_CV()
-    Write_Head()
-    Write_Document()
-end
-
-local function self_invoke()
-    local working_file = "main.tex"
-    local file = io.open(working_file, "w")
-    if file == nil then
-        print("Error: Cannot open file")
-        return
-    end
-    local tex_file = "\\documentclass[10pt]{article}" .. "\n" ..
-        "\\usepackage{luacode}" .. "\n" ..
-        "\\begin{luacode}" .. "\n" ..
-        "require('cv_renderer')" .. "\n" ..
-        "\\end{luacode}" .. "\n" ..
-        "\\directlua{Write_CV()}"
-
-    file:write(tex_file)
-    file:close()
-    local FILENAME = os.getenv("FILENAME") or "en"
-    local lang = Data.cv_langs
-    for i, one_lang in ipairs(lang) do
-        local full_filename = FILENAME .. "_" .. one_lang
-        os.execute("CV_LANG=" .. one_lang .. " lualatex --jobname=" .. full_filename .. " " .. working_file)
-        for index, ext in ipairs({ "aux", "log", "out" }) do
-            os.remove(full_filename .. "." .. ext)
-        end
-    end
-    os.remove(working_file)
-end
-
--- start variables
-Is_lib = pcall(debug.getlocal, 4, 1) or false
-Json_path = os.getenv("CV_JSON") or "cv_data.json"
-
-
-
-if Is_lib then
     -- we are in lualatex
     require("lualibs.lua")
     if tex == nil
@@ -575,9 +517,44 @@ if Is_lib then
     -- tex.print = texio.write_nl
     Lang = os.getenv("CV_LANG") or "en"
     print("Lang is: " .. Lang)
-    Data = utilities.json.tolua(read_file(Json_path))
-else
+    local json_data = utilities.json.tolua(read_file(Json_path))
+    TexLines(Headers())
+    TexLines(Metadata(json_data.me))
+    TexLines(Document(json_data))
+end
+
+local function self_invoke()
     local json = require "json"
-    Data = json.decode(read_file(Json_path))
+    local json_data = json.decode(read_file(Json_path))
+    local working_file = "main.tex"
+    local file = io.open(working_file, "w")
+    if file == nil then
+        print("Error: Cannot open file " .. working_file)
+        return
+    end
+    local tex_file = "\\documentclass[10pt]{article}" .. "\n" ..
+        "\\usepackage{luacode}" .. "\n" ..
+        "\\begin{luacode}" .. "\n" ..
+        "require('cv_renderer')" .. "\n" ..
+        "\\end{luacode}" .. "\n" ..
+        "\\directlua{Write_CV()}"
+
+    file:write(tex_file)
+    file:close()
+    local filename = json_data.filename
+    local lang = json_data.cv_langs
+    for i, one_lang in ipairs(lang) do
+        local full_filename = filename .. "_" .. one_lang
+        os.execute("CV_LANG=" .. one_lang .. " lualatex --jobname=" .. full_filename .. " " .. working_file)
+        for index, ext in ipairs({ "aux", "log", "out" }) do
+            os.remove(full_filename .. "." .. ext)
+        end
+    end
+    os.remove(working_file)
+end
+
+-- start variables
+Json_path = os.getenv("CV_JSON") or "cv_data.json"
+if not pcall(debug.getlocal, 4, 1) then
     self_invoke()
 end
