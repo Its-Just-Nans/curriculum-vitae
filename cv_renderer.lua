@@ -205,8 +205,8 @@ local function Header(me)
     return Latex_Block({ "center" },
         {
             "\\huge \\textbf{" .. g(me.title) .. "}\\\\",
-            "\\normalsize " .. g(me.subtitle) .. "\\\\",
-            (me.subsubtitle[Lang] ~= nil and table.insert(buf, "\\textbf{\\textit{" .. g(me.subsubtitle) .. "}}") or "")
+            (g(me.subsubtitle[Lang]) ~= nil and "\\normalsize " .. g(me.subtitle) .. "\\\\"),
+            (g(me.subsubtitle[Lang]) ~= nil and table.insert(buf, "\\textbf{\\textit{" .. g(me.subsubtitle) .. "}}") or "")
         }
     )
 end
@@ -257,31 +257,30 @@ local function Head(i)
 end
 
 local function Info(i)
-    local buf = ""
     if i == nil
     then
-        return buf
+        return {}
+    end
+    local mailStr = ""
+    local mails = type(i.mail) ~= "table" and { i.mail } or i.mail
+    for key, value in pairs(mails) do
+        mailStr = mailStr .. "\\href{mailto:" .. value .. "}{" .. value .. "}\\\\"
     end
     return {
-        ("\\section{\\textbf{" .. g(i.sidebar) .. "}}{"),
-        ("\\large"),
-        ("{"),
-        ("    \\fontsize{10pt}{10pt}\\selectfont"),
-        ("    \\href{mailto:" .. i.mail .. "}{" .. i.mail .. "}\\\\"),
-        ("}"),
-        (g(i.location) .. "~\\faMapMarker\\\\"),
-        ("\\href{tel:" .. i.phone:gsub(" ", "") .. "}{" .. i.phone .. "}~\\faPhone\\\\"),
-
-        (g(i.driving) .. "~\\faWpforms"),
-        ("\\\\"),
-        ("\\href{" .. i.website .. "}{" .. i.website .. "}~\\faHome"),
-        ("\\\\"),
-        ("\\href{" ..
-            i.linkedin.link .. "}{" .. i.linkedin.name .. "}~{\\color{linkedinblue}\\faLinkedinSquare}"),
-        ("\\\\"),
-        ("\\href{" .. i.github.link .. "}{" .. i.github.name .. "}~{\\color{black}\\faGithub}"),
-        ("\\\\"),
-        ("}"),
+        "\\section{\\textbf{" .. g(i.sidebar) .. "}}{",
+        "\\large",
+        "{",
+        "    \\fontsize{10pt}{10pt}\\selectfont",
+        mailStr,
+        "}",
+        g(i.location) .. "~\\faMapMarker\\\\",
+        "\\href{tel:" .. i.phone:gsub(" ", "") .. "}{" .. i.phone .. "}~\\faPhone\\\\",
+        g(i.driving) .. "~\\faWpforms\\\\",
+        "\\href{" .. i.website .. "}{" .. i.website .. "}~\\faHome\\\\",
+        "\\href{" ..
+        i.linkedin.link .. "}{" .. i.linkedin.name .. "}~{\\color{linkedinblue}\\faLinkedinSquare}\\\\",
+        "\\href{" .. i.github.link .. "}{" .. i.github.name .. "}~{\\color{black}\\faGithub}\\\\",
+        "}",
     }
 end
 
@@ -378,7 +377,7 @@ local function print_hobbies(p)
 end
 
 
-local function Headers()
+local function Headers(data)
     return { '\\usepackage{xcolor}',
         '\\usepackage[T1]{fontenc}',
         '\\usepackage[french]{babel}',
@@ -443,8 +442,8 @@ local function Headers()
         '\\definecolor{cvgrey}{HTML}{CFCFCF}',
         '\\colorlet{cvcolour}{cvblue}',
         '\\colorlet{cvaltcolour}{cvgrey}',
-        '\\newcommand{\\customHeight}{1.7cm}',
-        '\\usepackage[right=0.8cm, left=0.8cm, top=\\customHeight, bottom=\\customHeight, a4paper]{geometry}',
+        '\\usepackage[right=0.8cm, left=0.8cm, top=' ..
+        data.margin.top .. ', bottom=' .. data.margin.bottom .. ', a4paper]{geometry}',
         '\\newlength{\\paracolwidth}',
         '\\newlength{\\onefifthwidth}',
         '\\setlength{\\paracolwidth}{0.50\\textwidth}',
@@ -516,9 +515,9 @@ function Write_CV()
     -- for debugging
     -- tex.print = texio.write_nl
     Lang = os.getenv("CV_LANG") or "en"
-    print("Lang is: " .. Lang)
+    print("Lang is: " .. Lang .. "\n")
     local json_data = utilities.json.tolua(read_file(Json_path))
-    TexLines(Headers())
+    TexLines(Headers(json_data))
     TexLines(Metadata(json_data.me))
     TexLines(Document(json_data))
 end
