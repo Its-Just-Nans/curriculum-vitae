@@ -62,7 +62,7 @@ local function g(value)
         if value[Lang] ~= nil then
             return value[Lang]
         end
-        if value["optionnal"] == true then
+        if value["optional"] == true then
             return nil
         end
         local text = "Value not found for '" .. Lang .. "' in " .. utilities.json.tostring(value) .. "\n"
@@ -136,7 +136,7 @@ local function Experience(data)
     table.insert(buf, "\\newline")
     table.insert(buf, "\\begin{tabular}{r> {}p{1.1\\paracolwidth}}")
     for nameCount = 1, #workData do
-        if workData[nameCount].optionnal ~= true then
+        if workData[nameCount].optional ~= true then
             if workData[nameCount].name[Lang] ~= nil then
                 table.insert(buf,
                     g(workData[nameCount].date) ..
