@@ -522,9 +522,9 @@ function Write_CV()
     TexLines(Document(json_data))
 end
 
-local function self_invoke()
+local function generate_cv_from_json(path_to_json)
     local json = require "json"
-    local json_data = json.decode(read_file(Json_path))
+    local json_data = json.decode(read_file(path_to_json))
     local working_file = "main.tex"
     local file = io.open(working_file, "w")
     if file == nil then
@@ -544,7 +544,8 @@ local function self_invoke()
     local lang = json_data.cv_langs
     for i, one_lang in ipairs(lang) do
         local full_filename = filename .. "_" .. one_lang
-        os.execute("CV_LANG=" .. one_lang .. " lualatex --jobname=" .. full_filename .. " " .. working_file)
+        os.execute("CV_JSON=" ..
+        path_to_json .. " CV_LANG=" .. one_lang .. " lualatex --jobname=" .. full_filename .. " " .. working_file)
         for index, ext in ipairs({ "aux", "log", "out" }) do
             os.remove(full_filename .. "." .. ext)
         end
@@ -555,5 +556,9 @@ end
 -- start variables
 Json_path = os.getenv("CV_JSON") or "cv_data.json"
 if not pcall(debug.getlocal, 4, 1) then
-    self_invoke()
+    generate_cv_from_json(Json_path)
 end
+
+return {
+    generate_cv_from_json
+}
