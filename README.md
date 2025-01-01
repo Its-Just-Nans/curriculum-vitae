@@ -10,3 +10,7 @@ A single lua script which autoload itself into lualatex to generate a cv from a 
 # create the cv_data.json
 lua curriculum_vitae.lua
 ```
+
+## Package
+
+- See [./luarocks](./luarocks/) folder

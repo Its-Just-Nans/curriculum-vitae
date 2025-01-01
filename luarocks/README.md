@@ -8,6 +8,8 @@ luarocks install curriculum_vitae --local
 
 ## Usage
 
+> As it is a self invoking library, lualaTeX may need the file to be in the same directory as the script that uses it.
+
 ```lua
 -- export LUA_PATH="$HOME/.luarocks/share/lua/5.3/?.lua"
 local libpath = package.searchpath("curriculum_vitae", package.path)
