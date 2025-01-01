@@ -6,9 +6,9 @@
 luarocks write_rockspec \
     --homepage https://github.com/Its-Just-Nans/curriculum-vitae \
     --summary 'Generate curriculum vitæ from json using lua and lualatex.' \
-    --license MIT curriculum_vitae 1.0.1 ..
+    --license MIT curriculum_vitae 1.0.3 ..
 
-luarocks upload curriculum_vitae-1.0.1-1.rockspec --api-key=$LUAROCKS_API_KEY
+luarocks upload curriculum_vitae-1.0.3-1.rockspec --api-key=$LUAROCKS_API_KEY
 ```
 
 ## 2025-01-01

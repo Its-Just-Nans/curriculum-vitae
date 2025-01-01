@@ -560,5 +560,5 @@ if not pcall(debug.getlocal, 4, 1) then
 end
 
 return {
-    generate_cv_from_json
+    generate_cv_from_json = generate_cv_from_json
 }

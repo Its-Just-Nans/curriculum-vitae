@@ -9,7 +9,7 @@ luarocks install curriculum_vitae --local
 ## Usage
 
 ```lua
--- export LUA_PATH="$HOME/.luarocks/share/lua/5.1/?.lua"
+-- export LUA_PATH="$HOME/.luarocks/share/lua/5.3/?.lua"
 local libpath = package.searchpath("curriculum_vitae", package.path)
 if not libpath then
     error("Failed to find the library")
