@@ -534,7 +534,7 @@ local function generate_cv_from_json(path_to_json)
     local tex_file = "\\documentclass[10pt]{article}" .. "\n" ..
         "\\usepackage{luacode}" .. "\n" ..
         "\\begin{luacode}" .. "\n" ..
-        "require('cv_renderer')" .. "\n" ..
+        "require('curriculum_vitae')" .. "\n" ..
         "\\end{luacode}" .. "\n" ..
         "\\directlua{Write_CV()}"
 
@@ -544,8 +544,8 @@ local function generate_cv_from_json(path_to_json)
     local lang = json_data.cv_langs
     for i, one_lang in ipairs(lang) do
         local full_filename = filename .. "_" .. one_lang
-        os.execute("CV_JSON=" ..
-        path_to_json .. " CV_LANG=" .. one_lang .. " lualatex --jobname=" .. full_filename .. " " .. working_file)
+        local env_args = "CV_JSON=" .. path_to_json .. " CV_LANG=" .. one_lang
+        os.execute(env_args .. " lualatex --jobname=" .. full_filename .. " " .. working_file)
         for index, ext in ipairs({ "aux", "log", "out" }) do
             os.remove(full_filename .. "." .. ext)
         end

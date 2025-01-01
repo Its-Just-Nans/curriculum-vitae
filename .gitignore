@@ -6,3 +6,4 @@ data/
 *.log
 *.out
 .env
+*.rock
