@@ -1,4 +1,4 @@
-# curriculum-vitae - luarock
+# curriculum-vitae with [luarocks](https://luarocks.org/)
 
 This package is available on luarocks. To install it, run:
 
