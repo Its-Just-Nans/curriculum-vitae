@@ -1,5 +1,5 @@
 package = "curriculum_vitae"
-version = "1.0.3-1"
+version = "1.0.7-1"
 source = {
    url = "git+ssh://git@github.com/Its-Just-Nans/curriculum-vitae.git"
 }

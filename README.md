@@ -14,3 +14,4 @@ lua curriculum_vitae.lua
 ## Package
 
 - See [./luarocks](./luarocks/) folder
+- <https://luarocks.org/modules/Its-Just-Nans/curriculum_vitae>
