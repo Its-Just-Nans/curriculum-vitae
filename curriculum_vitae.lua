@@ -531,10 +531,11 @@ local function generate_cv_from_json(path_to_json)
         print("Error: Cannot open file " .. working_file)
         return
     end
+    local path_to_lib = debug.getinfo(1).short_src
     local tex_file = "\\documentclass[10pt]{article}" .. "\n" ..
         "\\usepackage{luacode}" .. "\n" ..
         "\\begin{luacode}" .. "\n" ..
-        "require('curriculum_vitae')" .. "\n" ..
+        "require(" .. path_to_lib .. ")" .. "\n" ..
         "\\end{luacode}" .. "\n" ..
         "\\directlua{Write_CV()}"
 
