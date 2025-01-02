@@ -535,7 +535,7 @@ local function generate_cv_from_json(path_to_json)
     local tex_file = "\\documentclass[10pt]{article}" .. "\n" ..
         "\\usepackage{luacode}" .. "\n" ..
         "\\begin{luacode}" .. "\n" ..
-        "require(" .. path_to_lib .. ")" .. "\n" ..
+        "require('" .. path_to_lib .. "')" .. "\n" ..
         "\\end{luacode}" .. "\n" ..
         "\\directlua{Write_CV()}"
 
