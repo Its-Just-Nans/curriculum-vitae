@@ -10,8 +10,6 @@ local function read_file(file)
     return content
 end
 
-
-
 local function TableConcat(t1, t2)
     for i = 1, #t2 do
         t1[#t1 + 1] = t2[i]
@@ -19,29 +17,13 @@ local function TableConcat(t1, t2)
     return t1
 end
 
--- limited by technologies of my time
--- Variable Number of Arguments is not supported
-
-local function TableConcat3(t1, t2, t3)
-    return TableConcat(TableConcat(t1, t2), t3)
+local function TableConcatN(t)
+    local buf = {}
+    for i = 1, #t do
+        buf = TableConcat(buf, t[i])
+    end
+    return buf
 end
-
-local function TableConcat4(t1, t2, t3, t4)
-    return TableConcat(TableConcat3(t1, t2, t3), t4)
-end
-
-local function TableConcat5(t1, t2, t3, t4, t5)
-    return TableConcat(TableConcat4(t1, t2, t3, t4), t5)
-end
-
-local function TableConcat6(t1, t2, t3, t4, t5, t6)
-    return TableConcat(TableConcat5(t1, t2, t3, t4, t5), t6)
-end
-
-local function TableConcat7(t1, t2, t3, t4, t5, t6, t7)
-    return TableConcat(TableConcat6(t1, t2, t3, t4, t5, t6), t7)
-end
-
 
 local function Latex_Block(arr1, data)
     local head_block = "\\begin"
@@ -49,13 +31,12 @@ local function Latex_Block(arr1, data)
     do
         head_block = head_block .. "{" .. v .. "}"
     end
-    return TableConcat3(
+    return TableConcatN({
         { head_block },
         data,
         { "\\end{" .. arr1[1] .. "}" }
-    )
+    })
 end
-
 
 local function g(value)
     if type(value) == "table" then
@@ -205,21 +186,21 @@ local function Header(me)
     return Latex_Block({ "center" },
         {
             "\\huge \\textbf{" .. g(me.title) .. "}\\\\",
-            (g(me.subsubtitle[Lang]) ~= nil and "\\normalsize " .. g(me.subtitle) .. "\\\\"),
+            (g(me.subtitle[Lang]) ~= nil and "\\normalsize " .. g(me.subtitle) .. "\\\\" or ""),
             (g(me.subsubtitle[Lang]) ~= nil and table.insert(buf, "\\textbf{\\textit{" .. g(me.subsubtitle) .. "}}") or "")
         }
     )
 end
 
 local function Content(data)
-    return TableConcat6(
+    return TableConcatN({
         Header(data.me),
         { "\\fontsize{11.3pt}{11.3pt}\\selectfont" },
         Education(data.school),
         Experience(data.work),
         Project(data.project),
         Personal(data.personal)
-    )
+    })
 end
 
 local function Head(i)
@@ -457,7 +438,7 @@ local function Sidebar(data)
     return TableConcat(
         { "\\fontsize{11.5pt}{11.5pt}\\selectfont", },
         Latex_Block({ "navbar" },
-            TableConcat7(
+            TableConcatN({
                 Head(data.me),
                 Info(data.me),
                 print_dev_languages(data.languages),
@@ -465,7 +446,7 @@ local function Sidebar(data)
                 print_languages(data.langs),
                 print_hobbies(data.hobbies),
                 { "\\vspace*{\\fill}", }
-            )
+            })
         )
     )
 end
@@ -491,12 +472,12 @@ local function Document(data)
                 '\\hbadness5000',
             },
             Latex_Block({ "paracol", "2" },
-                TableConcat4(
+                TableConcatN({
                     { '\\switchcolumn*' },
                     Sidebar(data),
                     { '\\switchcolumn\\color{black!80}' },
                     Content(data)
-                )
+                })
             )
         )
     )
@@ -511,7 +492,6 @@ function Write_CV()
         texio = {}
         utilities = {}
     end
-    print = texio.write_nl
     -- for debugging
     -- tex.print = texio.write_nl
     Lang = os.getenv("CV_LANG") or "en"
